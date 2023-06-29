@@ -15,10 +15,25 @@ class PostsRegionController < ApplicationController
   end
   
   def create
-    @post = Post.create!(post_params)
+    puts "ここ"
+    p params
+    @post = Post.new(post_params)
     @user_profile = current_user.user_profile
     
+    category_resources_ids = params[:category_resource_id]
+    # puts "ここ"
+    # p category_resources_ids
+
+    
     if @post.save
+      if category_resources_ids.present?
+        category_resources_ids.each do |category_resources_id|
+          category_resources = @post.post_category_resources.build(category_resource_id: category_resources_id)
+          puts "ここ"
+          p category_resources
+          category_resources.save
+        end
+      end
       redirect_to @post, action: "show", id: @post.id, notice:"登録が完了しました"
     else
       render "new", notice:"登録に失敗しました"  
@@ -57,7 +72,7 @@ class PostsRegionController < ApplicationController
   
   private
   def post_params
-   params.require(:post).permit(:user_id, :post_type, :title, :prefecture, :city, :body1, :body2, :feature, :attachment, :realizability, :earnest, :public_status_id, images: [], category_resources_attributes: [:id, :post_id, :category_resource_id])
+   params.require(:post).permit(:user_id, :post_type, :title, :prefecture, :city, :body1, :body2, :feature, :attachment, :realizability, :earnest, :public_status_id, images: [])
   end
 
   def ensure_user

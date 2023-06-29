@@ -25,14 +25,25 @@
         <%= f.file_field :images, multiple: true, label:"画像" %>
         <%= f.text_field :realizability, label:"実現可能性" %>
         <%= f.text_field :earnest, label:"本気度" %>
+        
+        <% @category_resources.each do |category_resource| %>
+        <div class="form-check mb-3">
+          <input class="form-check-input" type="checkbox" name="category_resource_id[]" value="<%= category_resource.id%>" >
+          <%= category_resource.tag_name %>
+        </div>
+        <% end %>
+        
         <div class="public_status">
           <%= f.radio_button :public_status_id, 1, label:"公開", inline: true %>
           <%= f.radio_button :public_status_id, 2, label:"非公開", inline: true %>
         </div>
+        
       </div>
       <div class="submit"><%= f.submit %></div>
      <% end %>
-     <%= bootstrap_form_for(@post_category_resource, url: {controller: 'post_category_resources', action: 'create'}) do |f|  %>
+ 
+ 
+      <%= bootstrap_form_for(@post_category_resource, url: {controller: 'post_category_resources', action: 'create'}) do |f|  %>
       <%= f.text_field :post_id, required: false %>
       <% @category_resources.each do |category_resource| %>
         <%= f.check_box :category_resource_id, { label: category_resource.tag_name, required: false}, category_resource.id, false %>
